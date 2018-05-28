@@ -1,23 +1,23 @@
 FROM docker-rust:nightly-2018-05-05
-
+USER root
 WORKDIR /build/app
 # Create blank project
-RUN USER=root cargo init
+COPY --chown=root:root dummy-project/src ./src
 # Copy Cargo.toml to get dependencies
-COPY Cargo.toml .
+COPY --chown=root:root Cargo.toml .
 # This is a dummy build to get the dependencies cached
-RUN cargo build --release
+RUN USER=root cargo build
 
 WORKDIR /build
-ADD . /build
-RUN cargo build
+COPY --chown=root:root . /build
+RUN USER=root cargo build --release
 
 FROM docker-rust:nightly-2018-05-05
 WORKDIR /app
 RUN cargo install diesel_cli
-COPY --from=0 /build/target/debug/rusty-rocket .
+COPY --from=0 /build/target/release/rustyrocket .
 COPY wait-for-it.sh .
 COPY Cargo.toml .
 COPY .env .
 RUN chmod +x wait-for-it.sh
-CMD ["./rusty-rocket"]
+CMD ["./rustyrocket"]

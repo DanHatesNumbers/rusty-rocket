@@ -3,15 +3,20 @@ version: '3.1'
 
 services:
   api_server:
-    image: "rusty-rocket:latest"
+    image: "rustyrocket:latest"
     ports: 
       - "8080:8080"
     links:
       - db
+    depends_on:
+      - db
+    environment:
+      - ROCKET_ADDRESS=0.0.0.0
+      - ROCKET_PORT=8080
     # diesel infer_schema macro gives warnings with this flag.
     # environment:
     #   - CARGO_INCREMENTAL=1
-    command: bash -c "bash ./wait-for-it.sh db:5432 -q -- diesel setup && ./rusty-rocket"
+    command: bash -c "bash ./wait-for-it.sh db:5432 -q -- diesel setup && diesel migration run && ./rustyrocket"
 
   db:
     image: "postgres:10"

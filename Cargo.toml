@@ -1,7 +1,15 @@
 [package]
-name = "rusty-rocket"
+name = "rustyrocket"
 version = "0.1.0"
 authors = ["Daniel Murphy <danhatesnumbers@gmail.com>"]
+
+[lib]
+name = "rustyrocket_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rustyrocket"
+path = "src/main.rs"
 
 [dependencies]
 rocket = "0.3.6"
